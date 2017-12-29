@@ -15,3 +15,7 @@ Start the local development server:
 ```
 npm run start
 ```
+
+## Deployment
+
+Changes to `master` branch automatically deploy to [api-links-demo.surge.sh](http://api-links-demo.surge.sh/)

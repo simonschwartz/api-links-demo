@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - '7'
+install:
+  - npm install
+script:
+  - echo "no test"
+before_deploy:
+  - npm run build
+deploy:
+  skip_cleanup: true
+  provider: surge
+  project: ./dist/
+  domain: api-links-demo.surge.sh
+  on:
+    branch: master
