@@ -4,10 +4,11 @@
  * This service provides a simple search function for
  * finding repositories based on keyword/s
  *
- * Author: Simon Schwartz
  *******************************************************/
 
 import axios from 'axios';
+import parseLinks from 'parse-link-header';
+import { setPaginationUI } from './ui';
 const GithubSearchEndpoint = 'https://api.github.com/search/repositories';
 
 /**
@@ -16,12 +17,25 @@ const GithubSearchEndpoint = 'https://api.github.com/search/repositories';
  *
  * @param {string} keywords
  *
- * @return {promise}
+ * @return {promise} response body and object of pagination list
  */
 export const searchRepositories = keywords => {
-  const endpoint = `${GithubSearchEndpoint}?q=${encodeURIComponent(
-    keywords
-  )}&per_page=10`;
+  const endpoint = `${GithubSearchEndpoint}?q=${encodeURIComponent(keywords)}`;
+  return axios
+    .get(endpoint)
+    .then(response => setPaginationUI(response.headers.link));
+};
 
-  return axios.get(endpoint).then(response => console.log(response));
+/**
+ * Paginates the current search results using endpoint
+ * supplied in response header links
+ *
+ * @param {string} endpoint
+ *
+ * @return {promise}
+ */
+export const paginateSearchResults = endpoint => {
+  return axios
+    .get(endpoint)
+    .then(response => setPaginationUI(response.headers.link));
 };

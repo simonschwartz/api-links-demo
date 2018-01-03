@@ -19,6 +19,7 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
-    "axios": "^0.17.1"
+    "axios": "^0.17.1",
+    "parse-link-header": "^1.0.1"
   }
 }

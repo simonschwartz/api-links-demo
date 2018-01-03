@@ -1,5 +1,5 @@
 import { searchRepositories } from './api';
-
+import { setPaginationUI } from './ui';
 /*
  * Attatch onSubmit event handler to the search form
  */
