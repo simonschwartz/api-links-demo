@@ -1,22 +1,20 @@
 /*******************************************************
- * Functions to update the User Interface
+ * Functions that render User Interface components
  *
  * This service provides functions for updating
  * the User Interface
  *
+ * Simon Schwartz
  *******************************************************/
-import parseLinks from 'parse-link-header';
-import { paginateSearchResults } from './api';
 
 /**
- * Contstructs pagination section HTML
+ * Adds relevant pagination buttons to the UI
  *
  * @param {Object} paginationLinks - the parsed API response pagination header links
  *
- * @return {string} html of pagination links
  */
-const constructPaginationHTML = parsedHeaderLinks => {
-  // state the type of buttons and order we want them
+export const addPaginationButtons = parsedHeaderLinks => {
+  // We use an array to control the order they are displayed in the UI
   const paginationButtons = ['first', 'prev', 'next', 'last'];
 
   const html = `
@@ -28,55 +26,11 @@ const constructPaginationHTML = parsedHeaderLinks => {
     </ul>
   `;
 
-  return html;
-};
-
-/**
- * Update the pagitation UI component based on API response
- * 1. Add eventListener to pagination container
- * 2. Add pagination html to the DOM
- *
- * @param {Object} paginationLinks - the API response pagination links
- *
- */
-export const createPaginationButtons = paginationLinks => {
-  const parsedHeaderLinks = parseLinks(paginationLinks);
-  const paginationContainer = document.getElementById('paginationContainer');
-
-  // 1. Attatch event handler to pagination container
-  // We use event bubbling to determine which API endpoint we use when a
-  // pagination button is clicked
-  paginationContainer.addEventListener(
-    'click',
-    event => {
-      const clickedButtonID = event.target.id;
-      switch (clickedButtonID) {
-        case 'first':
-          paginateSearchResults(parsedHeaderLinks.first.url);
-          break;
-        case 'prev':
-          paginateSearchResults(parsedHeaderLinks.prev.url);
-          break;
-        case 'next':
-          paginateSearchResults(parsedHeaderLinks.next.url);
-          break;
-        case 'last':
-          paginateSearchResults(parsedHeaderLinks.last.url);
-          break;
-        default:
-          break;
-      }
-    },
-    { once: true }
-  );
-
-  // add html to container
-  const html = constructPaginationHTML(parsedHeaderLinks);
   paginationContainer.innerHTML = html;
 };
 
 /**
- * Remove pagination buttons from the DOM
+ * Removes pagination buttons from the UI
  *
  */
 export const removePaginationButtons = () => {
@@ -85,13 +39,47 @@ export const removePaginationButtons = () => {
 };
 
 /**
- * Helper function that determines what state to set the pagination links
- * Run this heper function whenever state is updated
+ * Updates the search results displayed in the UI
+ *
+ * @param {Array} searchItems - search result items
+ *
  */
-export const setPaginationUI = headerLinks => {
-  if (headerLinks) {
-    createPaginationButtons(headerLinks);
-  } else {
-    removePaginationButtons();
-  }
+export const updateSearchResults = searchItems => {
+  const html = `
+    <ul class="searchResults">
+        ${searchItems
+          .map(item => `<li><a href="${item.html_url}">${item.name}</a></li>`)
+          .join('')}
+    </ul>
+  `;
+
+  const searchResultsContainer = document.getElementById(
+    'searchResultsContainer'
+  );
+  searchResultsContainer.innerHTML = html;
+};
+
+/**
+ * Sets an error message to the UI
+ *
+ * @param {String} message - Error message to display to the user
+ *
+ */
+export const setErrorMessage = message => {
+  const errorMessageContainer = document.getElementById(
+    'errorMessageContainer'
+  );
+  const content = `<strong>${message}</strong>`;
+  errorMessageContainer.innerHTML = content;
+};
+
+/**
+ * Sets an error message to the UI
+ *
+ * @param {Boolean} isLoading - Loading state of the page eg true = loading
+ *
+ */
+export const setLoadingState = isLoading => {
+  const loadingContainer = document.getElementById('loadingContainer');
+  loadingContainer.innerHTML = isLoading ? '<p>Loading</p>' : '';
 };
