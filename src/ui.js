@@ -74,7 +74,7 @@ export const setErrorMessage = message => {
 };
 
 /**
- * Sets an error message to the UI
+ * Sets the page loading state
  *
  * @param {Boolean} isLoading - Loading state of the page eg true = loading
  *
